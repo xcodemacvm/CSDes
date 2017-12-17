@@ -9,14 +9,34 @@
 import Foundation
 import UIKit
 
-struct PullRequestModel: Codable {
+struct PullRequestModel: Decodable {
     let title: String
     let body: String?
     let user: UserModel
+
+    enum CodingKeys: String, CodingKey {
+        case title
+        case body
+        case user
+    }
 }
 
-struct UserModel: Codable {
-    let login: String
-    let avatar_url: String
-    let url: String
+struct UserModel: Decodable {
+    let username: String
+    let avatarURL: String
+    let userDetailsURL: String
+    
+    enum CodingKeys: String, CodingKey {
+        case username = "login"
+        case avatarURL = "avatar_url"
+        case userDetailsURL = "url"
+    }
+}
+
+struct UserDetailsModel: Decodable {
+    let fullName: String?
+    
+    enum CodingKeys: String, CodingKey {
+        case fullName = "name"
+    }
 }

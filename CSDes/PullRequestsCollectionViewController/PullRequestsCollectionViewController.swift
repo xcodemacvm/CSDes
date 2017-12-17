@@ -41,15 +41,17 @@ class PullRequestsCollectionViewController: UICollectionViewController, UICollec
      */
     
     func setupCollectionView() {
-        print("repositoryOwner: \(presenter?.repositoryOwner)")
-        print("repositoryName: \(presenter?.repositoryName)")
+        print("repositoryOwner: \(String(describing: presenter?.repositoryOwner))")
+        print("repositoryName: \(String(describing: presenter?.repositoryName))")
         if let owner = presenter?.repositoryOwner, let name = presenter?.repositoryName {
-            NetworkController.pullRequestData(owner: owner, name: name, completionHandler: { [unowned self] (networkResult) in
+            NetworkController.pullRequestData(url: URL.getPullRequestsURL(owner: owner, name: name), completionHandler: { [unowned self] (networkResult) in
                 switch networkResult {
                 case .success(let pullRequests):
                     print("pullRequests: \(pullRequests)")
                     self.pullRequests = pullRequests
-                    self.collectionView?.reloadData()
+                    DispatchQueue.main.async {
+                        self.collectionView?.reloadData()
+                    }
                 case .failure(let error):
                     print("erro: \(error.localizedDescription)")
                 }
@@ -112,7 +114,11 @@ class PullRequestsCollectionViewController: UICollectionViewController, UICollec
         // cell.pullRequestData(owner: "ReactiveX", name: "RxJava")
         cell.pullRequestTitle.text = pullRequests?[indexPath.row].title
         cell.pullRequestBody.text = pullRequests?[indexPath.row].body
-        
+        cell.username.text = pullRequests?[indexPath.row].user.username
+        cell.avatarImage.layer.cornerRadius = cell.avatarImage.bounds.width / 2
+        cell.avatarImage.clipsToBounds = true
+        cell.getFullName(urlString: (pullRequests?[indexPath.row].user.userDetailsURL)!)
+        cell.getAvatarImage(imageURLString: (pullRequests?[indexPath.row].user.avatarURL)!)
         return cell
     }
 

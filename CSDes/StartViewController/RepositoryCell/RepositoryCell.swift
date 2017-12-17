@@ -42,3 +42,18 @@ class RepositoryCell: UICollectionViewCell {
     }
 
 }
+
+extension RepositoryCell {
+    func getAvatarImage(imageURLString: String) {
+        NetworkController.mapImage(imageURLString: imageURLString) { (networkResult) in
+            switch networkResult {
+            case .success(let image):
+                DispatchQueue.main.async {
+                    self.avatarImage.image = image
+                }
+            case .failure(let error):
+                print("erro: \(error.localizedDescription)")
+            }
+        }
+    }
+}

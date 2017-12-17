@@ -59,34 +59,31 @@ class StartViewController: UICollectionViewController, UICollectionViewDelegateF
         super.init(coder: aDecoder)
     }
     
-//    func firstTask(completion: (_ success: Bool) -> Void) {
-//        // Do something
-//
-//        // Call completion, when finished, success or faliure
-//        completion(true)
-//    }
-    // Chamada..
-    //            firstTask(completion: { (success) in
-    //                if success {
-    //
-    //                }
-    //            })
-    
+  
     override func viewDidLoad() {
         super.viewDidLoad()
       //  networkRequest()
         collectionView?.register(UINib(nibName: "RepositoryCell", bundle: nil), forCellWithReuseIdentifier: reuseIdentifier)
-        if let collectionView = collectionView {
-            
-            NetworkController(collectionViewToReload: collectionView)
-            repositories = NetworkController.getRepositories
-            print("repositories no viewdidload: \(repositories?.count)")
-            
-            
-        }
-        // Do any additional setup after loading the view, typically from a nib.
+        setupCollectionView()
     }
 
+    func setupCollectionView() {
+        if let collectionView = collectionView {
+            
+            NetworkController.mapJSONToModel(url: URL.getRepositoriesURL(), completion: { (networkResult) in
+                switch networkResult {
+                case .success(let repositories):
+                    self.repositories = repositories
+                    DispatchQueue.main.async {
+                        collectionView.reloadData()
+                    }
+                case .failure(let error):
+                    print("erro: \(error.localizedDescription)")
+                }
+            })
+        }
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -97,9 +94,8 @@ class StartViewController: UICollectionViewController, UICollectionViewDelegateF
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if let avatarImages = NetworkController.getAvatarImages {
-            print("avatarImages na func do collectionview: \(avatarImages.count)")
-            return avatarImages.count
+        if let repositories = repositories {
+            return repositories.count
         }
         return 0
     }
@@ -113,16 +109,16 @@ class StartViewController: UICollectionViewController, UICollectionViewDelegateF
     //    repositories = NetworkController.getRepositories
         
         print("count: ABC")
-        if let repositories = NetworkController.getRepositories, let avatarImages = NetworkController.getAvatarImages {
+        if let repositories = repositories {
             cell.repositoryName.text = repositories[indexPath.row].name
             cell.repositoryDescription.text = repositories[indexPath.row].description
-            cell.starsCount.text = String(describing: repositories[indexPath.row].stargazers_count)
-            cell.forksCount.text = String(describing: repositories[indexPath.row].forks_count)
+            cell.starsCount.text = String(describing: repositories[indexPath.row].stargazers_count!)
+            cell.forksCount.text = String(describing: repositories[indexPath.row].forks_count!)
             cell.username.text = repositories[indexPath.row].name
             cell.fullName.text = repositories[indexPath.row].full_name
             cell.avatarImage.layer.cornerRadius = cell.avatarImage.bounds.width / 2
             cell.avatarImage.clipsToBounds = true
-            cell.avatarImage.image = avatarImages[indexPath.row]
+            cell.getAvatarImage(imageURLString: (repositories[indexPath.row].owner?.avatar_url)!)
             
         }
         
@@ -134,7 +130,7 @@ class StartViewController: UICollectionViewController, UICollectionViewDelegateF
         cell?.layer.backgroundColor = UIColor(red: 0, green: 1, blue: 0, alpha: 0.1).cgColor
         print("SELECTED!")
         
-        if let repositories = NetworkController.getRepositories {
+        if let repositories = repositories {
             let repo = repositories[indexPath.row].name
             let owner = repositories[indexPath.row].owner?.login
             presenter?.didClickButton(owner: owner, name: repo)
