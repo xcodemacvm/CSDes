@@ -20,7 +20,7 @@ protocol PullRequestsCollectionViewPresenter {
 class PullRequestsCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     
     var presenter: PullRequestsCollectionViewPresenter?
-    
+    var pullRequests: [PullRequestModel]? = [PullRequestModel]()
     
     init(pullRequestsCollectionViewPresenter: PullRequestsCollectionViewPresenter) {
   //      super.init(nibName: "PullRequestsCollectionViewController", bundle: nil)
@@ -30,6 +30,7 @@ class PullRequestsCollectionViewController: UICollectionViewController, UICollec
         if let layout = collectionView?.collectionViewLayout as? UICollectionViewFlowLayout {
             layout.scrollDirection = .vertical
         }
+        
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -39,6 +40,27 @@ class PullRequestsCollectionViewController: UICollectionViewController, UICollec
      tableView.register(UINib(nibName: "nibFileName", bundle: nil), forCellReuseIdentifier: "cellIdentifer")
      */
     
+    func setupCollectionView() {
+        print("repositoryOwner: \(presenter?.repositoryOwner)")
+        print("repositoryName: \(presenter?.repositoryName)")
+        if let owner = presenter?.repositoryOwner, let name = presenter?.repositoryName {
+            NetworkController.pullRequestData(owner: owner, name: name, completionHandler: { [unowned self] (networkResult) in
+                switch networkResult {
+                case .success(let pullRequests):
+                    print("pullRequests: \(pullRequests)")
+                    self.pullRequests = pullRequests
+                    self.collectionView?.reloadData()
+                case .failure(let error):
+                    print("erro: \(error.localizedDescription)")
+                }
+            })
+        }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        setupCollectionView()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -79,17 +101,18 @@ class PullRequestsCollectionViewController: UICollectionViewController, UICollec
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of items
-        return 10
+        if let pullRequests = pullRequests {
+            return pullRequests.count
+        }
+        return 0
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! PullRequestCollectionViewCell
-       // cell.pullRequestData(owner: "ReactiveX", name: "RxJava")
-        if let owner = presenter?.repositoryOwner, let name = presenter?.repositoryName {
-            cell.pullRequestData(owner: owner, name: name)
-            print("owner: \(owner) name: \(name)")
-        }
-    
+        // cell.pullRequestData(owner: "ReactiveX", name: "RxJava")
+        cell.pullRequestTitle.text = pullRequests?[indexPath.row].title
+        cell.pullRequestBody.text = pullRequests?[indexPath.row].body
+        
         return cell
     }
 

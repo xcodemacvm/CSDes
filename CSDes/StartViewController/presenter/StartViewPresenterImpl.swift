@@ -24,7 +24,7 @@ class StartViewPresenterImpl: StartViewPresenter {
         
         pullRequestsViewController.presenter?.repositoryName = name
         pullRequestsViewController.presenter?.repositoryOwner = owner
-        
+        print("pullRequestsViewController.presenter?.repositoryName: \(String(describing: pullRequestsViewController.presenter?.repositoryName))")
         startViewController?.navigationController?.pushViewController(pullRequestsViewController, animated: true)
         print("to aquui")
 
