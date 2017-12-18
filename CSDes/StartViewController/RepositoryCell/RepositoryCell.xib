@@ -43,17 +43,15 @@
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="xas-2c-AFV">
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="star_logo" translatesAutoresizingMaskIntoConstraints="NO" id="xas-2c-AFV">
                         <rect key="frame" x="86" y="106" width="30" height="30"/>
-                        <color key="backgroundColor" red="0.32809102929693335" green="0.35369220170483562" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="30" id="DKm-tI-R9j"/>
                             <constraint firstAttribute="height" constant="30" id="Vck-Wc-Qu1"/>
                         </constraints>
                     </imageView>
-                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="tn9-Bd-bYu">
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="fork_logo" translatesAutoresizingMaskIntoConstraints="NO" id="tn9-Bd-bYu">
                         <rect key="frame" x="15" y="106" width="30" height="30"/>
-                        <color key="backgroundColor" red="1" green="0.43035521847437841" blue="0.41183736434737173" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="30" id="dIk-M4-bXt"/>
                             <constraint firstAttribute="width" constant="30" id="xtV-1b-6pB"/>
@@ -105,6 +103,7 @@
             <connections>
                 <outlet property="avatarImage" destination="tDu-MN-sVb" id="4Ib-qa-v8Y"/>
                 <outlet property="forksCount" destination="xB1-nH-xIF" id="Fsx-4D-vfM"/>
+                <outlet property="forksImage" destination="tn9-Bd-bYu" id="fJ0-Dx-Rs6"/>
                 <outlet property="fullName" destination="XyH-S6-B6e" id="vlz-jz-X1n"/>
                 <outlet property="repositoryDescription" destination="TAf-zo-jg6" id="vRs-0w-1gK"/>
                 <outlet property="repositoryName" destination="XIc-rY-d0m" id="qqj-mm-V4J"/>
@@ -114,4 +113,8 @@
             <point key="canvasLocation" x="-102.5" y="-67"/>
         </collectionViewCell>
     </objects>
+    <resources>
+        <image name="fork_logo" width="64" height="64"/>
+        <image name="star_logo" width="128" height="128"/>
+    </resources>
 </document>

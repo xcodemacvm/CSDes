@@ -46,6 +46,8 @@ class StartViewController: UICollectionViewController, UICollectionViewDelegateF
     var presenter: StartViewPresenter?
     private var repositories: [GitApiItemsModel]? = [GitApiItemsModel]()
     private var avatarImages: [UIImage]? = [UIImage]()
+    private var numberOfPages: Int = 1
+    private let pageSize: Int = 5
     
     init(startViewPresenter: StartViewPresenter) {
         super.init(nibName: "StartViewController", bundle: nil)
@@ -94,10 +96,27 @@ class StartViewController: UICollectionViewController, UICollectionViewDelegateF
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        var maxPages = 0
         if let repositories = repositories {
-            return repositories.count
+            if repositories.count % pageSize == 0 {
+                maxPages = repositories.count / pageSize
+            } else {
+                maxPages = repositories.count / pageSize + 1
+            }
+            
+            guard numberOfPages <= maxPages else {return maxPages*pageSize}
+            return pageSize*numberOfPages
         }
+        
+        
         return 0
+    }
+    
+    override func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        if (collectionView?.contentOffset.y)! + UIScreen.main.bounds.height == collectionView?.contentSize.height {
+            numberOfPages += 1
+            collectionView?.reloadData()
+        }
     }
     
     override func numberOfSections(in collectionView: UICollectionView) -> Int {

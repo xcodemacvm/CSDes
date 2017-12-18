@@ -13,6 +13,7 @@ class RepositoryCell: UICollectionViewCell {
     @IBOutlet weak var repositoryName: UILabel!
     @IBOutlet weak var repositoryDescription: UILabel!
     
+    @IBOutlet weak var forksImage: UIImageView!
     @IBOutlet weak var forksCount: UILabel!
     @IBOutlet weak var starsCount: UILabel!
     @IBOutlet weak var avatarImage: UIImageView!
